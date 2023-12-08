@@ -32,7 +32,10 @@ data class LeaderBoard(val ownerId: Int, val event: String, val members: Map<Str
         return newStars
     }
 
-    fun getSortedMembersByLocalScore(): List<Member> {
+    fun getSortedMembers(useStars: Boolean = false): List<Member> {
+        if (useStars) {
+            return members.values.sortedByDescending { it.stars }
+        }
         return members.values.sortedByDescending { it.localScore }
     }
 
@@ -57,7 +60,12 @@ data class LeaderBoard(val ownerId: Int, val event: String, val members: Map<Str
             return "Anonymous user #${id}"
         }
 
-        fun getMessage(place: Int): String {
+        fun getMessage(place: Int, useStars: Boolean = false): String {
+
+            if (useStars) {
+                return "${place}) *${getMemberName()}* ${stars}\n"
+            }
+
             return "${place}) *${getMemberName()}* ${localScore}\n"
         }
 
@@ -67,7 +75,7 @@ data class LeaderBoard(val ownerId: Int, val event: String, val members: Map<Str
 
     data class Star(val member: String, val day: Int, val star: Int) {
         fun getMessage(): String {
-            return "*${member}* received ${":star:".repeat(star)} for solving ${day} challenge :tada:\n"
+            return "*${member}* received ${":star:".repeat(star)} for solving challenge ${day} :tada:\n"
         }
     }
 }
